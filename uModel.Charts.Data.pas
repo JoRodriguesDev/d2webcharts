@@ -8,6 +8,8 @@ uses
 type
   TModelChartData = class(TInterfacedObject, iModelChartData)
   private
+    [weak]
+    FParent: iModelChartDataSet;
     FLabelName: string;
     FValue: Variant;
     FBackgroundColor: TChartColor;
@@ -17,8 +19,8 @@ type
     FPointHoverBackgroundColor: TChartColor;
     FPointHoverBorderColor: TChartColor;
   public
-    constructor Create(const ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor: TChartColor);
-    class function New(const ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor: TChartColor): iModelChartData;
+    constructor Create(AParent: iModelChartDataSet; const ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor: TChartColor);
+    class function New(AParent: iModelChartDataSet; const ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor: TChartColor): iModelChartData;
     destructor Destroy; override;
     function LabelName(AValue: string): iModelChartData; overload;
     function Value(AValue: Variant): iModelChartData; overload;
@@ -36,6 +38,7 @@ type
     function PointBorderColor: TChartColor; overload;
     function PointHoverBackgroundColor: TChartColor; overload;
     function PointHoverBorderColor: TChartColor; overload;
+    function &End: iModelChartDataSet;
   end;
 
 implementation
@@ -59,13 +62,19 @@ begin
   FBackgroundColor := AValue;
 end;
 
+function TModelChartData.&End: iModelChartDataSet;
+begin
+  Result := FParent;
+end;
+
 function TModelChartData.BackgroundColor: TChartColor;
 begin
   Result := FBackgroundColor;
 end;
 
-constructor TModelChartData.Create(const ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor: TChartColor);
+constructor TModelChartData.Create(AParent: iModelChartDataSet; const ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor: TChartColor);
 begin
+  FParent                     := AParent;
   FLabelName                  := ALabel;
   FValue                      := AValue;
   FBackgroundColor            := ABackgroundColor;
@@ -93,9 +102,9 @@ begin
   FLabelName := AValue;
 end;
 
-class function TModelChartData.New(const ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor: TChartColor): iModelChartData;
+class function TModelChartData.New(AParent: iModelChartDataSet; const ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor: TChartColor): iModelChartData;
 begin
-  result := self.Create(ALabel, AValue, ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor);
+  result := self.Create(AParent, ALabel, AValue, ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor);
 end;
 
 function TModelChartData.PointBackgroundColor(AValue: TChartColor): iModelChartData;

@@ -26,12 +26,15 @@ type
     destructor Destroy; override;
     function GenerateLabels: string;
     function AddChartData(ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor: TChartColor; APointBackgroundColor: TChartColor = None; APointBorderColor: TChartColor = None; APointHoverBackgroundColor: TChartColor = None; APointHoverBorderColor: TChartColor = None): iModelChartDataSet;
+    function Data(Index: Integer): iModelChartData;
     function LabelName: string; overload;
     function LabelName(AValue: string): iModelChartDataSet; overload;
     function Opacity(AValue: Double): iModelChartDataSet; overload;
     function Generate: string;
+    function ArrayValues: string;
     function Opacity: Double; overload;
     function RecordCount: integer;
+    function ClearData: iModelChartDataSet;
     function &End: iModelChart;
   end;
 
@@ -44,12 +47,28 @@ uses
 
 { TModelChartDataSet }
 
+function TModelChartDataSet.ArrayValues: string;
+begin
+  Result := '[' + Self.GenerateValue + ']';
+end;
+
+function TModelChartDataSet.ClearData: iModelChartDataSet;
+begin
+  result := self;
+  FChartDataList.Clear;
+end;
+
 constructor TModelChartDataSet.Create(AParent: iModelChart; ALabel: string);
 begin
   FParent := AParent;
   FChartDataList := TInterfaceList.Create;
   FLabel := ALabel;
   FOpacity := 1;
+end;
+
+function TModelChartDataSet.Data(Index: Integer): iModelChartData;
+begin
+  result := FChartDataList.Items[Index] as iModelChartData;
 end;
 
 destructor TModelChartDataSet.Destroy;
@@ -66,7 +85,7 @@ end;
 function TModelChartDataSet.AddChartData(ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor: TChartColor; APointBackgroundColor: TChartColor = None; APointBorderColor: TChartColor = None; APointHoverBackgroundColor: TChartColor = None; APointHoverBorderColor: TChartColor = None): iModelChartDataSet;
 begin
   Result := Self;
-  var ChartData := TModelChartData.New(ALabel, AValue, ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor);
+  var ChartData := TModelChartData.New(Self, ALabel, AValue, ABackgroundColor, ABorderColor, APointBackgroundColor, APointBorderColor, APointHoverBackgroundColor, APointHoverBorderColor);
   FChartDataList.Add(ChartData);
 end;
 
@@ -206,4 +225,3 @@ begin
 end;
 
 end.
-

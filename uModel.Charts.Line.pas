@@ -23,9 +23,12 @@ type
     function LabelName: string; overload;
     function LabelName(AValue: string): iModelChart; overload;
     function ClearDataSets: iModelChart;
+    function NewId: iModelChart;
     function Height(AValue: string): iModelChart;
+    function DataSets(Index: Integer): iModelChartDataSet;
     function Width(AValue: string): iModelChart;
     function Generate: string;
+    function Update: string;
   end;
 
 implementation
@@ -50,6 +53,11 @@ begin
   FChartDataSets := TInterfaceList.Create;
   FHeight := '150px';
   FWidth  := '400px';
+end;
+
+function TModelChartLine.DataSets(Index: Integer): iModelChartDataSet;
+begin
+  result := FChartDataSets.Items[Index] as iModelChartDataSet;
 end;
 
 destructor TModelChartLine.Destroy;
@@ -90,6 +98,16 @@ end;
 class function TModelChartLine.New: iModelChart;
 begin
   Result := Self.Create;
+end;
+
+function TModelChartLine.NewId: iModelChart;
+begin
+
+end;
+
+function TModelChartLine.Update: string;
+begin
+
 end;
 
 function TModelChartLine.Generate: string;
@@ -143,4 +161,3 @@ begin
 end;
 
 end.
-

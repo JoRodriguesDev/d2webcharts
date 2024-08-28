@@ -25,7 +25,10 @@ type
     function ClearDataSets: iModelChart;
     function Height(AValue: string): iModelChart;
     function Width(AValue: string): iModelChart;
+    function NewId: iModelChart;
+    function DataSets(Index: Integer): iModelChartDataSet;
     function Generate: string;
+    function Update: string;
   end;
 
 implementation
@@ -50,6 +53,11 @@ begin
   FChartDataSets := TInterfaceList.Create;
   FHeight := '150px';
   FWidth  := '400px';
+end;
+
+function TModelChartPie.DataSets(Index: Integer): iModelChartDataSet;
+begin
+  result := FChartDataSets.Items[Index] as iModelChartDataSet;
 end;
 
 destructor TModelChartPie.Destroy;
@@ -92,6 +100,16 @@ begin
   Result := Self.Create;
 end;
 
+function TModelChartPie.NewId: iModelChart;
+begin
+
+end;
+
+function TModelChartPie.Update: string;
+begin
+
+end;
+
 function TModelChartPie.Generate: string;
 var
   LLabelsStr, LDatasetsStr, LChartID: string;
@@ -129,4 +147,3 @@ begin
 end;
 
 end.
-

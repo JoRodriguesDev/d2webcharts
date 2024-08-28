@@ -45,6 +45,7 @@ type
     function PointBorderColor: TChartColor; overload;
     function PointHoverBackgroundColor: TChartColor; overload;
     function PointHoverBorderColor: TChartColor; overload;
+    function &End: iModelChartDataSet;
   end;
 
   iModelChartDataSet = interface
@@ -52,9 +53,12 @@ type
     function GenerateLabels: string;
     function AddChartData(ALabel: string; AValue: Variant; ABackgroundColor, ABorderColor: TChartColor; APointBackgroundColor: TChartColor = None; APointBorderColor: TChartColor = None; APointHoverBackgroundColor: TChartColor = None; APointHoverBorderColor: TChartColor = None): iModelChartDataSet;
     function LabelName: string; overload;
+    function Data(Index: Integer): iModelChartData;
     function LabelName(AValue: string): iModelChartDataSet; overload;
     function Opacity(AValue: Double): iModelChartDataSet; overload;
     function Generate: string;
+    function ArrayValues: string;
+    function ClearData: iModelChartDataSet;
     function Opacity: Double; overload;
     function RecordCount: integer;
     function &End: iModelChart;
@@ -63,12 +67,14 @@ type
   iModelChart = interface
     ['{C9BD1133-7A8F-42A9-A2C9-950251F8177A}']
     function AddChartDataSet(ALabel: string): iModelChartDataSet;
+    function DataSets(Index: Integer): iModelChartDataSet;
     function LabelName: string; overload;
     function LabelName(AValue: string): iModelChart; overload;
     function ClearDataSets: iModelChart;
     function Height(AValue: string): iModelChart;
     function Width(AValue: string): iModelChart;
     function Generate: string;
+    function Update: string;
   end;
 
   iModelChartFactory = interface
@@ -84,4 +90,3 @@ type
 implementation
 
 end.
-
