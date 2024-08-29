@@ -147,19 +147,14 @@ begin
     '    },' +
     '    options: {' +
     '      scales: {' +
-    '        xAxes: [{' +
-    '          reverse: true,' +
-    '          gridLines: {' +
-    '            color: "rgba(0,0,0,0.05)"' +
+    '        x: {' +
+    '          grid: {' +
+    '            offset: true' +
     '          }' +
-    '        }],' +
-    '        yAxes: [{' +
-    '          borderDash: [5, 5],' +
-    '          gridLines: {' +
-    '            color: "rgba(0,0,0,0)",' +
-    '            fontColor: "#fff"' +
-    '          }' +
-    '        }]' +
+    '        },' +
+    '        y: {' +
+    '          beginAtZero: true' +
+    '        }' +
     '      }' +
     '    }' +
     '  });' +
