@@ -11,6 +11,7 @@ uses
 type
   TModelChartPolarArea = class(TInterfacedObject, iModelChart)
   private
+    FChartID: string;
     FChartDataSets: TInterfaceList;
     FHeight: string;
     FWidth: string;
@@ -51,6 +52,7 @@ constructor TModelChartPolarArea.Create;
 begin
   inherited Create;
   FChartDataSets := TInterfaceList.Create;
+  FChartID := 'chartjs-polararea' + IntToStr(Random(MaxInt));
   FHeight := '150px';
   FWidth  := '400px';
 end;
@@ -100,26 +102,32 @@ begin
   Result := Self.Create;
 end;
 
-function TModelChartPolarArea.NewId: iModelChart;
-begin
-
-end;
-
 function TModelChartPolarArea.Update: string;
 begin
+  var LDataSetUpdateStr := '';
+  for var i := 0 to FChartDataSets.Count - 1 do
+  begin
+    var LDatasetsStr := (FChartDataSets[i] as iModelChartDataSet).ArrayValues;
+    LDataSetUpdateStr := LDataSetUpdateStr + Format('chart.data.datasets[%d].data = %s;', [i, LDatasetsStr]);
+  end;
 
+  Result :=
+    'var chart = Chart.getChart("'+ FChartID +'");' +
+    'if (chart) {' +
+    ' ' + LDataSetUpdateStr + ' ' +
+    '  chart.update();' +
+    '}';
 end;
 
 function TModelChartPolarArea.Generate: string;
 var
-  LLabelsStr, LDatasetsStr, LChartID: string;
+  LLabelsStr, LDatasetsStr: string;
   LChartDataSet: iModelChartDataSet;
 begin
   LLabelsStr    := EmptyStr;
   LDatasetsStr  := EmptyStr;
-  LChartID      := EmptyStr;
   LLabelsStr    := (FChartDataSets[0] as iModelChartDataSet).GenerateLabels;
-  LChartID      := IntToStr(Random(MaxInt));
+
   for var i := 0 to Pred(FChartDataSets.Count) do
   begin
     LChartDataSet := (FChartDataSets[i] as iModelChartDataSet);
@@ -129,10 +137,10 @@ begin
   end;
 
   Result := Format(
-    '<canvas id="chartjs-polar-area'+ LChartID +'" width="%s" height="%s"></canvas>' +
+    '<canvas id="chartjs-polar-area'+ FChartID +'" width="%s" height="%s"></canvas>' +
     '<script>' +
     'document.addEventListener("DOMContentLoaded", () => {' +
-    '  new Chart(document.getElementById("chartjs-polar-area' + LChartID + '"), {' +
+    '  new Chart(document.getElementById("chartjs-polar-area' + FChartID + '"), {' +
     '    type: "polarArea",' +
     '    data: {' +
     '      labels: [%s],' +
@@ -145,3 +153,4 @@ begin
 end;
 
 end.
+
