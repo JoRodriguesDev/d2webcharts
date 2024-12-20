@@ -26,7 +26,6 @@ type
     function ClearDataSets: iModelChart;
     function Height(AValue: string): iModelChart;
     function Width(AValue: string): iModelChart;
-    function NewId: iModelChart;
     function DataSets(Index: Integer): iModelChartDataSet;
     function Generate: string;
     function Update: string;
