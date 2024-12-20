@@ -128,11 +128,13 @@ end;
 
 function TModelChartLine.Generate: string;
 var
-  LLabelsStr, LDatasetsStr: string;
+  LLabelsStr, LDatasetsStr, LOnItemClickStr: string;
   LChartDataSet: iModelChartDataSet;
 begin
   LLabelsStr    := EmptyStr;
   LDatasetsStr  := EmptyStr;
+  LOnItemClickStr := EmptyStr;
+
   LLabelsStr    := (FChartDataSets[0] as iModelChartDataSet).GenerateLabels;
 
   for var i := 0 to Pred(FChartDataSets.Count) do
@@ -143,17 +145,22 @@ begin
     LDatasetsStr  := LDatasetsStr + LChartDataSet.Generate;
   end;
 
+  if FOnItemClick <> '' then
+    LOnItemClickStr := FOnItemClick;
+
   Result := Format(
-    '<canvas id="chartjs-line'+ FChartID +'" width="%s" height="%s"></canvas>' +
+    '<canvas id="' + FChartID + '" width="%s" height="%s"></canvas>' +
     '<script>' +
     'document.addEventListener("DOMContentLoaded", () => {' +
-    '  new Chart(document.getElementById("chartjs-line' + FChartID + '"), {' +
+    '  const ctx = document.getElementById("'+ FChartID +'").getContext("2d");' +
+    '  const chart = new Chart(ctx, {' +
     '    type: "line",' +
     '    data: {' +
     '      labels: [%s],' +
     '      datasets: [%s]' +
     '    },' +
     '    options: {' +
+    '      responsive: true,' +
     '      scales: {' +
     '        x: {' +
     '          grid: {' +
@@ -163,7 +170,18 @@ begin
     '        y: {' +
     '          beginAtZero: true' +
     '        }' +
+    '      },' +
+    '    onClick: (e) => {' +
+    '      const activePoints = chart.getElementsAtEventForMode(e, "nearest", { intersect: false }, false);' +
+    '      if (activePoints.length > 0) {' +
+    '        const index = activePoints[0].index;' +
+    '        const datasetIndex = activePoints[0].datasetIndex;' +
+    '        const label = chart.data.labels[index];' +
+    '        const datasetLabel = chart.data.datasets[datasetIndex].label;' +
+    '        const value = chart.data.datasets[datasetIndex].data[index];' +
+            LOnItemClickStr +
     '      }' +
+    '    }' +
     '    }' +
     '  });' +
     '});' +
