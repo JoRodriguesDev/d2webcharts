@@ -16,6 +16,7 @@ type
     FHeight: string;
     FWidth: string;
     FLabel: string;
+    FOnItemClick: string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -27,6 +28,7 @@ type
     function Height(AValue: string): iModelChart;
     function Width(AValue: string): iModelChart;
     function DataSets(Index: Integer): iModelChartDataSet;
+    function OnItemClick(ACallbackJS: string): iModelChart;
     function Generate: string;
     function Update: string;
   end;
@@ -101,6 +103,12 @@ begin
   Result := Self.Create;
 end;
 
+function TModelChartDoughnut.OnItemClick(ACallbackJS: string): iModelChart;
+begin
+  Result := Self;
+  FOnItemClick := ACallbackJS;
+end;
+
 function TModelChartDoughnut.Update: string;
 begin
   var LDataSetUpdateStr := '';
@@ -154,4 +162,3 @@ begin
 end;
 
 end.
-
