@@ -24,7 +24,6 @@ type
     function LabelName: string; overload;
     function LabelName(AValue: string): iModelChart; overload;
     function ClearDataSets: iModelChart;
-    function NewId: iModelChart;
     function DataSets(Index: Integer): iModelChartDataSet;
     function Height(AValue: string): iModelChart;
     function Width(AValue: string): iModelChart;
