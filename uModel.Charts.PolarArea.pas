@@ -16,6 +16,7 @@ type
     FHeight: string;
     FWidth: string;
     FLabel: string;
+    FOnItemClick: string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -27,6 +28,7 @@ type
     function DataSets(Index: Integer): iModelChartDataSet;
     function Height(AValue: string): iModelChart;
     function Width(AValue: string): iModelChart;
+    function OnItemClick(ACallbackJS: string): iModelChart;
     function Generate: string;
     function Update: string;
   end;
@@ -101,6 +103,12 @@ begin
   Result := Self.Create;
 end;
 
+function TModelChartPolarArea.OnItemClick(ACallbackJS: string): iModelChart;
+begin
+  Result := Self;
+  FOnItemClick := ACallbackJS;
+end;
+
 function TModelChartPolarArea.Update: string;
 begin
   var LDataSetUpdateStr := '';
@@ -152,4 +160,3 @@ begin
 end;
 
 end.
-
