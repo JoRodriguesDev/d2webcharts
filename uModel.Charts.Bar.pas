@@ -16,6 +16,7 @@ type
     FHeight: string;
     FWidth: string;
     FLabel: string;
+    FOnItemClick: string;
   public
     constructor Create;
     destructor Destroy; override;
@@ -25,6 +26,7 @@ type
     function LabelName: string; overload;
     function LabelName(AValue: string): iModelChart; overload;
     function ClearDataSets: iModelChart;
+    function OnItemClick(ACallbackJS: string): iModelChart;
     function Height(AValue: string): iModelChart;
     function Width(AValue: string): iModelChart;
     function Generate: string;
@@ -54,6 +56,12 @@ begin
   FChartID := 'chartjs-bar' + IntToStr(Random(MaxInt));
   FHeight := '150px';
   FWidth  := '400px';
+end;
+
+function TModelChartBar.OnItemClick(ACallbackJS: string): iModelChart;
+begin
+  Result := Self;
+  FOnItemClick := ACallbackJS;
 end;
 
 function TModelChartBar.DataSets(Index: Integer): iModelChartDataSet;
@@ -120,11 +128,13 @@ end;
 
 function TModelChartBar.Generate: string;
 var
-  LLabelsStr, LDatasetsStr: string;
+  LLabelsStr, LDatasetsStr, LOnItemClickStr: string;
   LChartDataSet: iModelChartDataSet;
 begin
   LLabelsStr    := EmptyStr;
   LDatasetsStr  := EmptyStr;
+  LOnItemClickStr := EmptyStr;
+
   LLabelsStr    := (FChartDataSets[0] as iModelChartDataSet).GenerateLabels;
 
   for var i := 0 to Pred(FChartDataSets.Count) do
@@ -135,17 +145,22 @@ begin
     LDatasetsStr  := LDatasetsStr + LChartDataSet.Generate;
   end;
 
-Result := Format(
+  if FOnItemClick <> '' then
+    LOnItemClickStr := FOnItemClick;
+
+  Result := Format(
     '<canvas id="' + FChartID + '" width="%s" height="%s"></canvas>' +
     '<script>' +
     'document.addEventListener("DOMContentLoaded", () => {' +
-    '  new Chart(document.getElementById("'+ FChartID +'"), {' +
+    '  const ctx = document.getElementById("'+ FChartID +'").getContext("2d");' +
+    '  const chart = new Chart(ctx, {' +
     '    type: "bar",' +
     '    data: {' +
     '      labels: [%s],' +
     '      datasets: [%s]' +
     '    },' +
     '    options: {' +
+    '      responsive: true,' +
     '      scales: {' +
     '        x: {' +
     '          grid: {' +
@@ -155,12 +170,22 @@ Result := Format(
     '        y: {' +
     '          beginAtZero: true' +
     '        }' +
+    '      },' +
+    '    onClick: (e) => {' +
+    '      const activePoints = chart.getElementsAtEventForMode(e, "nearest", { intersect: true }, false);' +
+    '      if (activePoints.length > 0) {' +
+    '        const index = activePoints[0].index;' +
+    '        const datasetIndex = activePoints[0].datasetIndex;' +
+    '        const label = chart.data.labels[index];' +
+    '        const datasetLabel = chart.data.datasets[datasetIndex].label;' +
+    '        const value = chart.data.datasets[datasetIndex].data[index];' +
+            LOnItemClickStr +
     '      }' +
+    '    }' +
     '    }' +
     '  });' +
     '});' +
     '</script>', [FWidth, FHeight, LLabelsStr, LDatasetsStr]);
-
 end;
 
 end.
