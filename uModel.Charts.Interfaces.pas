@@ -73,6 +73,7 @@ type
     function ClearDataSets: iModelChart;
     function Height(AValue: string): iModelChart;
     function Width(AValue: string): iModelChart;
+    function OnItemClick(ACallbackJS: string): iModelChart;
     function Generate: string;
     function Update: string;
   end;
