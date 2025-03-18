@@ -45,8 +45,9 @@ uses
 
 function TModelChartPie.ClearDataSets: iModelChart;
 begin
-  FChartDataSets.Clear;
   Result := Self;
+  FChartDataSets.Clear;
+
 end;
 
 constructor TModelChartPie.Create;
@@ -112,16 +113,23 @@ end;
 function TModelChartPie.Update: string;
 begin
   var LDataSetUpdateStr := '';
+  var LLabelsUpdateStr  := '';
+
   for var i := 0 to FChartDataSets.Count - 1 do
   begin
-    var LDatasetsStr := (FChartDataSets[i] as iModelChartDataSet).ArrayValues;
+    var LChartDataSet   := (FChartDataSets[i] as iModelChartDataSet);
+    var LDatasetsStr    := LChartDataSet.ArrayValues;
+    var LDatasetLabels  := LChartDataSet.GenerateLabels;
+
     LDataSetUpdateStr := LDataSetUpdateStr + Format('chart.data.datasets[%d].data = %s;', [i, LDatasetsStr]);
+    LLabelsUpdateStr  := LLabelsUpdateStr + Format('chart.data.datasets[%d].labels = [%s];', [i, LDatasetLabels]);
   end;
 
   Result :=
     'var chart = Chart.getChart("'+ FChartID +'");' +
     'if (chart) {' +
-    ' ' + LDataSetUpdateStr + ' ' +
+    '  ' + LLabelsUpdateStr +
+    '  ' + LDataSetUpdateStr +
     '  chart.update();' +
     '}';
 end;
