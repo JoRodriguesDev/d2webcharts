@@ -53,15 +53,9 @@ constructor TModelChartBar.Create;
 begin
   inherited Create;
   FChartDataSets := TInterfaceList.Create;
-  FChartID := 'chartjs-bar' + IntToStr(Random(MaxInt));
-  FHeight := '150px';
-  FWidth  := '400px';
-end;
-
-function TModelChartBar.OnItemClick(ACallbackJS: string): iModelChart;
-begin
-  Result := Self;
-  FOnItemClick := ACallbackJS;
+  FChartID  := 'chartjs-bar' + IntToStr(Random(MaxInt));
+  FHeight   := '150px';
+  FWidth    := '400px';
 end;
 
 function TModelChartBar.DataSets(Index: Integer): iModelChartDataSet;
@@ -109,32 +103,43 @@ begin
   Result := Self.Create;
 end;
 
+function TModelChartBar.OnItemClick(ACallbackJS: string): iModelChart;
+begin
+  Result := Self;
+  FOnItemClick := ACallbackJS;
+end;
+
 function TModelChartBar.Update: string;
 begin
   var LDataSetUpdateStr := '';
+  var LLabelsUpdateStr  := '';
+
   for var i := 0 to FChartDataSets.Count - 1 do
   begin
-    var LDatasetsStr := (FChartDataSets[i] as iModelChartDataSet).ArrayValues;
+    var LChartDataSet   := (FChartDataSets[i] as iModelChartDataSet);
+    var LDatasetsStr    := LChartDataSet.ArrayValues;
+    var LDatasetLabels  := LChartDataSet.GenerateLabels;
+
     LDataSetUpdateStr := LDataSetUpdateStr + Format('chart.data.datasets[%d].data = %s;', [i, LDatasetsStr]);
+    LLabelsUpdateStr  := LLabelsUpdateStr + Format('chart.data.datasets[%d].labels = [%s];', [i, LDatasetLabels]);
   end;
 
   Result :=
     'var chart = Chart.getChart("'+ FChartID +'");' +
     'if (chart) {' +
-    ' ' + LDataSetUpdateStr + ' ' +
+    '  ' + LLabelsUpdateStr +
+    '  ' + LDataSetUpdateStr +
     '  chart.update();' +
     '}';
 end;
 
 function TModelChartBar.Generate: string;
 var
-  LLabelsStr, LDatasetsStr, LOnItemClickStr: string;
+  LLabelsStr, LDatasetsStr: string;
   LChartDataSet: iModelChartDataSet;
 begin
   LLabelsStr    := EmptyStr;
   LDatasetsStr  := EmptyStr;
-  LOnItemClickStr := EmptyStr;
-
   LLabelsStr    := (FChartDataSets[0] as iModelChartDataSet).GenerateLabels;
 
   for var i := 0 to Pred(FChartDataSets.Count) do
@@ -144,9 +149,6 @@ begin
       LDatasetsStr  := LDatasetsStr + ', ';
     LDatasetsStr  := LDatasetsStr + LChartDataSet.Generate;
   end;
-
-  if FOnItemClick <> '' then
-    LOnItemClickStr := FOnItemClick;
 
   Result := Format(
     '<canvas id="' + FChartID + '" width="%s" height="%s"></canvas>' +
@@ -172,14 +174,14 @@ begin
     '        }' +
     '      },' +
     '    onClick: (e) => {' +
-    '      const activePoints = chart.getElementsAtEventForMode(e, "nearest", { intersect: true }, false);' +
+    '      const activePoints = chart.getElementsAtEventForMode(e, "nearest", { intersect: false }, false);' +
     '      if (activePoints.length > 0) {' +
     '        const index = activePoints[0].index;' +
     '        const datasetIndex = activePoints[0].datasetIndex;' +
     '        const label = chart.data.labels[index];' +
     '        const datasetLabel = chart.data.datasets[datasetIndex].label;' +
     '        const value = chart.data.datasets[datasetIndex].data[index];' +
-            LOnItemClickStr +
+            FOnItemClick +
     '      }' +
     '    }' +
     '    }' +
@@ -189,4 +191,3 @@ begin
 end;
 
 end.
-
