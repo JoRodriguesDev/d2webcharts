@@ -121,7 +121,7 @@ begin
     var LDatasetLabels  := LChartDataSet.GenerateLabels;
 
     LDataSetUpdateStr := LDataSetUpdateStr + Format('chart.data.datasets[%d].data = %s;', [i, LDatasetsStr]);
-    LLabelsUpdateStr  := LLabelsUpdateStr + Format('chart.data.datasets[%d].labels = [%s];', [i, LDatasetLabels]);
+    LLabelsUpdateStr  := LLabelsUpdateStr + Format('chart.data.labels = [%s];', [i, LDatasetLabels]);
   end;
 
   Result :=
