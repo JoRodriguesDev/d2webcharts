@@ -152,10 +152,10 @@ begin
   end;
 
   Result := Format(
-    '<canvas id="chartjs-pie'+ FChartID +'" width="%s" height="%s"></canvas>' +
+    '<canvas id="'+ FChartID +'" width="%s" height="%s"></canvas>' +
     '<script>' +
     'document.addEventListener("DOMContentLoaded", () => {' +
-    '  new Chart(document.getElementById("chartjs-pie' + FChartID + '"), {' +
+    '  new Chart(document.getElementById("' + FChartID + '"), {' +
     '    type: "pie",' +
     '    data: {' +
     '      labels: [%s],' +
