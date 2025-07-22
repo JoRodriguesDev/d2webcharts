@@ -151,10 +151,10 @@ begin
   end;
 
   Result := Format(
-    '<canvas id="chartjs-doughnut'+ FChartID +'" width="%s" height="%s"></canvas>' +
+    '<canvas id="'+ FChartID +'" width="%s" height="%s"></canvas>' +
     '<script>' +
     'document.addEventListener("DOMContentLoaded", () => {' +
-    '  new Chart(document.getElementById("chartjs-doughnut' + FChartID + '"), {' +
+    '  new Chart(document.getElementById("' + FChartID + '"), {' +
     '    type: "doughnut",' +
     '    data: {' +
     '      labels: [%s],' +
