@@ -151,10 +151,10 @@ begin
   end;
 
   Result := Format(
-    '<canvas id="chartjs-polar-area'+ FChartID +'" width="%s" height="%s"></canvas>' +
+    '<canvas id="'+ FChartID +'" width="%s" height="%s"></canvas>' +
     '<script>' +
     'document.addEventListener("DOMContentLoaded", () => {' +
-    '  new Chart(document.getElementById("chartjs-polar-area' + FChartID + '"), {' +
+    '  new Chart(document.getElementById("' + FChartID + '"), {' +
     '    type: "polarArea",' +
     '    data: {' +
     '      labels: [%s],' +
